@@ -1,7 +1,7 @@
-# Title of Your Final Project Here 
+# Global Temperature and Global Economy
 ## INFO 201 "Foundational Skills for Data Science"
 
-Authors: Your names here
+Authors: Anthony Wen, Ici Su, Janet Huang, Eric Zhong
 
 
 For the Final Project -- Data Wrangling, add the following to this code repository:
