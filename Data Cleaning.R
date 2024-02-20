@@ -12,17 +12,13 @@ berk_df <- read.csv("Initial CSV Files/GlobalLandTemperaturesByCountry.csv")
 wb_df3 <- read.csv("Initial CSV Files/historical-data country temperature.csv")
 #Economic Dataset from WEO sorted by country from 1990 to 2020
 weo_country_df <- read.csv("Initial CSV Files/WEO by country.csv")
-#Economic Dataset from WEO sorted by characteristics from 1990 to 2020
-weo_data_df <- read.csv("Initial CSV Files/WEO by Data.csv")
 
 #Changing the country codes to their country names and renaming the column to country
 wb_df3$ISO_3DIGIT <- countrycode(wb_df3$ISO_3DIGIT,"iso3c","country.name",custom_match = c(KSV = "Kosovo"))
 wb_df3 <- rename(wb_df3,"Country"="ISO_3DIGIT")
 
 #creating a new df with the average earth surface temperature by country
-AverageTemp_df <- berk_df %>% group_by(Country) %>% summarize(AverageTemperature = mean(AverageTemperature,na.rm = TRUE), AverageTemperatureUncertainty = mean(AverageTemperatureUncertainty,na.rm = TRUE))
-
-str(weo_country_df)
+AverageTemp_df <- berk_df %>% group_by(Country) %>% summarize(Average_Temperature = mean(AverageTemperature,na.rm = TRUE), Average_Temperature_Uncertainty = mean(AverageTemperatureUncertainty,na.rm = TRUE))
 
 #changing the years to be rows instead of columns for all datasets
 weo_data_long <- weo_country_df %>%
@@ -47,12 +43,12 @@ wb_long <- wb_df %>%
     Year = as.integer(gsub("X", "", Year)) # Convert the year to an integer and remove the 'X' prefix
   ) %>% select(Country.name,Series.name,SCALE,Year,Value)
 
+#joining tables together by year and country
+final_df <- inner_join(wb_long,weo_data_long,by = c("Country.name" = "Country","Year"="Year"),relationship = "many-to-many")
+final_df <- inner_join(final_df,wb_df3,by = c("Country.name" = "Country"))
+final_df <- inner_join(final_df,AverageTemp_df,by=c("Country.name" = "Country"))
 
-#Example Cleaning up 
-#rural_county_max_fd_df <- rural_df %>% 
-#  filter(fd_percent == max_rural) %>% 
-#  arrange(desc(Population)) %>% 
-#  select(County, State, Population, fd_percent)
-
+#renaming the columns to the correct names
+final_df <- rename(final_df,"Country"="Country.name","Climate_Characteristic"="Series.name","Scale_Climate"="SCALE","Climate_Values"="Value.x","Economy_Characteristic"="Subject.Descriptor","Units_Economy"="Units","Scale_Economy"="Scale","Economy_Values"="Value.y","Feb_Temp"="Feb_temp","Mar_Temp"="Mar_temp","May_Temp"="May_temp","Sept_Temp"="Sept_temp","Oct_Temp"="Oct_temp","Dec_Temp"="Dec_temp","Annual_Temp"="Annual_temp")
 
 
