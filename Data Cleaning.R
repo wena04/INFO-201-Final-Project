@@ -1,3 +1,4 @@
+library(tidyr)
 library(dplyr)
 library(stringr)
 library(countrycode)
@@ -20,6 +21,31 @@ wb_df3 <- rename(wb_df3,"Country"="ISO_3DIGIT")
 
 #creating a new df with the average earth surface temperature by country
 AverageTemp_df <- berk_df %>% group_by(Country) %>% summarize(AverageTemperature = mean(AverageTemperature,na.rm = TRUE), AverageTemperatureUncertainty = mean(AverageTemperatureUncertainty,na.rm = TRUE))
+
+str(weo_country_df)
+
+#changing the years to be rows instead of columns for all datasets
+weo_data_long <- weo_country_df %>%
+  pivot_longer(
+    cols = starts_with("X"), #Selects all columns that start with X
+    names_to = "Year", # This is the new column that will contain the year values
+    values_to = "Value",
+    names_prefix = "X" # This removes the 'X' prefix from the year column names
+  ) %>%
+  mutate(
+    Year = as.integer(gsub("X", "", Year)) # Convert the year to an integer and remove the 'X' prefix
+  ) %>% select(Country,Subject.Descriptor,Units,Scale,Year,Value)
+
+wb_long <- wb_df %>%
+  pivot_longer(
+    cols = starts_with("X"), #Selects all columns that start with X
+    names_to = "Year", # This is the new column that will contain the year values
+    values_to = "Value",
+    names_prefix = "X" # This removes the 'X' prefix from the year column names
+  ) %>%
+  mutate(
+    Year = as.integer(gsub("X", "", Year)) # Convert the year to an integer and remove the 'X' prefix
+  ) %>% select(Country.name,Series.name,SCALE,Year,Value)
 
 
 #Example Cleaning up 
