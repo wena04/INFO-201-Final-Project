@@ -1,1 +1,5 @@
-read.csv("")
+wb_df <- read.csv("Initial CSV Files/World Bank Climate Change.csv")
+wb_df2 <- read.csv("Initial CSV Files/GlobalLandTemperaturesByCountry.csv")
+wb_df3 <- read.csv("Initial CSV Files/historical-data country temperature.csv")
+weo_country_df <- read.csv("Initial CSV Files/WEO by country.csv")
+weo_data_df <- read.csv("Initial CSV Files/WEO by Data.csv")
