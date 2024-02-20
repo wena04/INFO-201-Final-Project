@@ -53,5 +53,6 @@ final_df <- rename(final_df,"Country"="Country.name","Climate_Characteristic"="S
 #reordering the columns to make it nicer
 final_df <- final_df %>% select(Country,Year,everything())
 
+final_df$Climate_Characteristic
 #removing rows with characteristics that we are not looking for
-final_df <- final_df %>% filer(Climate_Characteristic = )
+final_df <- final_df %>% filter(!Climate_Characteristic %in% c("Land area below 5m (% of land area)","Ceral__________"))
