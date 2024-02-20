@@ -69,7 +69,7 @@ final_df <- final_df %>% filter(!Climate_Characteristic %in% c("Land area below 
 final_df <- final_df %>% filter(!Economy_Characteristic %in% c("Gross domestic product corresponding to fiscal year, current prices","Total investment","Gross domestic product, current prices","Gross domestic product per capita, current prices"))
 
 #removing rows with Countries lack of  useful information 
-final_df <- final_df %>% filter(!Country %in% c("Afghanistan","Belarus","Azerbaijan"))
+#final_df <- final_df %>% filter(!Country %in% c("Afghanistan","Belarus","Azerbaijan"))
 
 #removing rows with years with 1 year time gap 
 final_df <- final_df %>% filter(!Year %in% c("1991","1993","1995","1997","1999","2001", "2003", "2005","2007","2009","2011"))
