@@ -50,5 +50,8 @@ final_df <- inner_join(final_df,AverageTemp_df,by=c("Country.name" = "Country"))
 
 #renaming the columns to the correct names
 final_df <- rename(final_df,"Country"="Country.name","Climate_Characteristic"="Series.name","Scale_Climate"="SCALE","Climate_Values"="Value.x","Economy_Characteristic"="Subject.Descriptor","Units_Economy"="Units","Scale_Economy"="Scale","Economy_Values"="Value.y","Feb_Temp"="Feb_temp","Mar_Temp"="Mar_temp","May_Temp"="May_temp","Sept_Temp"="Sept_temp","Oct_Temp"="Oct_temp","Dec_Temp"="Dec_temp","Annual_Temp"="Annual_temp")
+#reordering the columns to make it nicer
+final_df <- final_df %>% select(Country,Year,everything())
 
-
+#removing rows with characteristics that we are not looking for
+final_df <- final_df %>% filer(Climate_Characteristic = )
