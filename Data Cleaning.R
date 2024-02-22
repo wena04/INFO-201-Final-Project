@@ -72,8 +72,10 @@ final_df <- final_df %>% filter(!Economy_Characteristic %in% c("Gross domestic p
 #final_df <- final_df %>% filter(!Country %in% c("Afghanistan","Belarus","Azerbaijan"))
 
 #removing rows with years with 1 year time gap 
-final_df <- final_df %>% filter(!Year %in% c("1991","1993","1995","1997","1999","2001", "2003", "2005","2007","2009","2011"))
+#final_df <- final_df %>% filter(!Year %in% c("1991","1993","1995","1997","1999","2001", "2003", "2005","2007","2009","2011"))
 
+#make economic characteristics columns and not rows
+final_df <- final_df %>% mutate
 
 #test_df<-final_df %>% 
 #  filter(Economy_Values == "n/a" & Economy_Characteristic=="Population")
