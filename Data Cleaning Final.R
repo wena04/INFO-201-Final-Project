@@ -92,21 +92,25 @@ weo_country_df <- weo_country_df %>% rename("Gdp_units" = "Units.x", "Population
 #Creating the new column GDP per Capita
 weo_country_df <- weo_country_df %>% mutate(Gdp = gsub("[^0-9\\.]", "", Gdp), Gdp = as.numeric(Gdp), Population = gsub("[^0-9]", "", Population), Population = as.numeric(Population)) %>% mutate(Gdp_per_cap = if_else(is.na(Gdp) | is.na(Population), NA_real_, (Gdp * 1000) / Population))
 weo_country_df <- weo_country_df %>% mutate(Gdp = if_else(is.na(Gdp), 0, Gdp),Population = if_else(is.na(Population), 0, Population),Gdp_per_cap = (Gdp * 1000) / Population) 
-#Classifying countries based on their income level
-weo_country_df <- weo_country_df %>%
-  mutate(economic_status = case_when(
-    Gdp < 10 ~ "Low-income",
-    Gdp >= 10 & Gdp < 50 ~ "Lower-middle-income",
-    Gdp >= 50 & Gdp < 200 ~ "Upper-middle-income",
-    Gdp >= 200 ~ "High-income",
-    TRUE ~ NA_character_
-  ))
 weo_country_df <- weo_country_df %>% filter(!str_starts(Year,"198"))
 
 #joining all of the tables together to be one final dataset
 final_df <- left_join(berk_df,wb_df,by=c("Country"="Country.name","dt"="Year"))
 final_df <- inner_join(weo_country_df,final_df,by=c("Country"="Country","Year"="dt"))
 
-#renaming the columns in the dataframe
-final_df <- final_df %>% rename("GDP")
+#Classifying countries and years based on average temperature
+final_df <- final_df %>% mutate(climate_zone = case_when(Average_temp > 18 ~ "Tropical", Average_temp <= 18 & Average_temp > 10 ~ "Temperate", Average_temp<= 10 ~ "Cold", TRUE ~ "Not Classified"))
+#Classifying countries based on their income level
+final_df <- final_df %>% mutate(economic_status = case_when(Gdp < 10 ~ "Low-income",Gdp >= 10 & Gdp < 50 ~ "Lower-middle-income",Gdp >= 50 & Gdp < 200 ~ "Upper-middle-income",Gdp >= 200 ~ "High-income",TRUE ~ NA_character_))
+# Classifying Development level based on GDP per capita and total investment percent
+final_df <- final_df %>% mutate(development_status = case_when(Gdp_per_cap > 20 & `Total investment` > 20 ~ "Developed", Gdp_per_cap >= 5 & Gdp_per_cap <= 20 & `Total investment` >= 15 & `Total investment` <= 20 ~ "Developing",TRUE ~ "Developing" ))
+#Classifying countries based on their CO2 emissions rate
+final_df <- final_df %>% mutate(co2_category = case_when(`CO2 emissions per capita (metric tons)` < 2 ~ "Low emissions",`CO2 emissions per capita (metric tons)` >= 2 & `CO2 emissions per capita (metric tons)` < 10 ~ "Medium emissions",`CO2 emissions per capita (metric tons)` >= 10 & `CO2 emissions per capita (metric tons)` < 20 ~ "High emissions",`CO2 emissions per capita (metric tons)` >= 20 ~ "Very high emissions",TRUE ~ "Not Classified"))
+#Classifying countries based on their population
+final_df <- final_df %>% mutate(population_category = case_when(Population < 5 ~ "Small population",Population >= 5 & Population < 50 ~ "Medium population",Population >= 50 ~ "Large population",TRUE ~ "Not Classified"))
 
+#renaming the columns in the dataframe
+final_df <- final_df %>% rename("CO2_emissions"=`CO2 emissions per capita (metric tons)`,"Total_investment" = `Total investment`)
+
+#reording the columns to look neater
+#final_df <- final_df %>% select(Country,Year,CO2_emissions,co2_category)
