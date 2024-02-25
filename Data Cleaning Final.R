@@ -82,15 +82,31 @@ Investment <- Investment %>%
     values_from = "Value"
   )
 #joining the tables together
-weo_country_df <- left_join(GDP,Population,by=c("Country" = "Country","Year"="Year"))
-weo_country_df <- left_join(weo_country_df,Investment,by=c("Country" = "Country","Year"="Year"))
+weo_country_df <- inner_join(GDP,Population,by=c("Country" = "Country","Year"="Year"))
+weo_country_df <- inner_join(weo_country_df,Investment,by=c("Country" = "Country","Year"="Year"))
+#Changing the Characteristics to contain units and scale by adding the scale and units column to the characterisitcs
+weo_country_df <- weo_country_df %>% mutate(Units.x = paste(Units.x," (Billions)"),Units.y = paste(Units.y," (Millions)"))
+weo_country_df <- weo_country_df %>% select(Country,Year,gdp,Units.x,Population,Units.y,`Total investment`,Units)
+weo_country_df <- weo_country_df %>% rename("Gdp_units" = "Units.x", "Population_units" = "Units.y","
+                                            Total_invest_units"="Units","Gdp" = "gdp")
+#Creating the new column GDP per Capita
+weo_country_df <- weo_country_df %>% mutate(Gdp = gsub("[^0-9\\.]", "", Gdp), Gdp = as.numeric(Gdp), Population = gsub("[^0-9]", "", Population), Population = as.numeric(Population)) %>% mutate(Gdp_per_cap = if_else(is.na(Gdp) | is.na(Population), NA_real_, (Gdp * 1000) / Population))
+weo_country_df <- weo_country_df %>% mutate(Gdp = if_else(is.na(Gdp), 0, Gdp),Population = if_else(is.na(Population), 0, Population),Gdp_per_cap = (Gdp * 1000) / Population) 
+#Classifying countries based on their income level
+weo_country_df <- weo_country_df %>%
+  mutate(economic_status = case_when(
+    Gdp < 10 ~ "Low-income",
+    Gdp >= 10 & Gdp < 50 ~ "Lower-middle-income",
+    Gdp >= 50 & Gdp < 200 ~ "Upper-middle-income",
+    Gdp >= 200 ~ "High-income",
+    TRUE ~ NA_character_
+  ))
+weo_country_df <- weo_country_df %>% filter(!str_starts(Year,"198"))
 
 #joining all of the tables together to be one final dataset
+final_df <- left_join(berk_df,wb_df,by=c("Country"="Country.name","dt"="Year"))
+final_df <- inner_join(weo_country_df,final_df,by=c("Country"="Country","Year"="dt"))
 
-
-#Creating the new column GDP per Capita
-#weo_country_df <- weo_country_df %>% filter(gdp != na) %>% mutate(GDP_per_Capita = (gdp*100000000)/ Population)
-#Checking the GDP to create catagorical Data Developing or Non Developing Country
-#weo_country_df <- weo_country_df %>% mutate(Is_Develop = if_else(GDP_per_Capita >= 15,000,na_rm = TRUE), TRUE, FALSE)
-
+#renaming the columns in the dataframe
+final_df <- final_df %>% rename("GDP")
 
