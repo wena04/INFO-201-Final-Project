@@ -3,7 +3,7 @@
 ## OVERVIEW TAB INFO
 
 overview_tab <- tabPanel("Overview Tab Title",
-   h1("Some title"),
+   h1("Global Economy and Climate Change"),
    p("some explanation")
 )
 
