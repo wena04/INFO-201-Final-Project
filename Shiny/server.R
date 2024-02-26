@@ -1,5 +1,6 @@
-server <- function(input,output){
-  output$Nameofthingthatuicalled <- renderText({
-    
-  })
+
+server <- function(input, output){
+  
+  # TODO Make outputs based on the UI inputs here
+  
 }
