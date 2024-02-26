@@ -11,7 +11,7 @@ For the Final Project -- Data Wrangling, add the following to this code reposito
 * Data Nutrition Label (pdf) 
 
 
-**Link: Link to your Shiny App here**
+**Link: [Link to Shiny App](https://wena04.shinyapps.io/Info201FinalProject/)**
 
 Please create the necessary files for your multi-page Shiny app in this GitHub repository. Consult the Canvas assignment for more details. Be sure to publish your app on Shinyapps.io.
 
