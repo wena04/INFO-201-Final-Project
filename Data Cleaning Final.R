@@ -41,11 +41,11 @@ berk_df <- berk_df %>% filter((str_starts(dt, "199") | str_starts(dt, "20")) & !
 # creating a new column "Group" that will indicate which year group and country group a the averaged volumn will belong to. (Since we know there is 12 months a year)
 berk_df <- berk_df %>% mutate(Groups = ceiling(row_number()/12)) 
 #calculating the average temperature based on the groups
-average_temp <- berk_df %>% group_by(Groups) %>% summarize(Average_temp = mean(AverageTemperature,na.rm = TRUE),Average_tempunct = mean(AverageTemperatureUncertainty,na.rm = TRUE)) 
+average_temp <- berk_df %>% group_by(Groups) %>% summarize(Average_temp = mean(AverageTemperature,na.rm = TRUE),Average_temp_unct = mean(AverageTemperatureUncertainty,na.rm = TRUE)) 
 #joining the two tables together
 berk_df <- berk_df %>% left_join(average_temp,by=c("Groups"="Groups"))
 #choosing only the first row of every group so get 1 value each year for each country
-berk_df <- berk_df %>% group_by(Groups) %>% slice(1) %>% select(Groups,dt,Country,Average_temp,Average_tempunct)
+berk_df <- berk_df %>% group_by(Groups) %>% slice(1) %>% select(Groups,dt,Country,Average_temp,Average_temp_unct)
 
 
 #Summarizing the WEO dataset for GDP, Population, and total Investment
