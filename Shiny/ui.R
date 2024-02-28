@@ -1,4 +1,5 @@
-
+library(plotly)
+library(ggplot2)
 
 ## OVERVIEW TAB INFO
 
@@ -16,13 +17,13 @@ viz_1_sidebar <- sidebarPanel(
 
 viz_1_main_panel <- mainPanel(
   h2("Vizualization 1 Title"),
-  # plotlyOutput(outputId = "your_viz_1_output_id")
+  plotlyOutput(outputId = "your_viz_1_output_id")
 )
 
 viz_1_tab <- tabPanel("Viz 1 tab title",
   sidebarLayout(
     viz_1_sidebar,
-    viz_1_main_panel
+    viz_1_main_panel 
   )
 )
 
