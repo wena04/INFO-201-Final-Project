@@ -1,11 +1,16 @@
 library(plotly)
 library(ggplot2)
 
+## Theme for the document
+
+
 ## OVERVIEW TAB INFO
 
-overview_tab <- tabPanel("Overview Tab Title",
-   h1("Global Economy and Climate Change"),
-   p("some explanation")
+overview_tab <- tabPanel("Introduction",
+   h1("Global Economy and Climate Change",align = "center"),
+   hr(),
+   HTML('<center><img src="Photo 1.jpg"></center>'),
+   includeMarkdown("Intro Text.md")
 )
 
 ## VIZ 1 TAB INFO
@@ -13,12 +18,11 @@ overview_tab <- tabPanel("Overview Tab Title",
 viz_1_sidebar <- sidebarPanel(
   h2("Options for graph"),
   #TODO: Put inputs for modifying graph here
-  checkboxInput(input = "test_id",label = "The")
   
 )
 
 viz_1_main_panel <- mainPanel(
-  h2("Vizualization 1 Title"),
+  h2("Vizualization 1 Title",align = "center"),
   plotlyOutput(outputId = "your_viz_1_output_id")
 )
 
@@ -37,7 +41,7 @@ viz_2_sidebar <- sidebarPanel(
 )
 
 viz_2_main_panel <- mainPanel(
-  h2("Vizualization 2 Title"),
+  h2("Vizualization 2 Title",align = "center"),
   # plotlyOutput(outputId = "your_viz_1_output_id")
 )
 
