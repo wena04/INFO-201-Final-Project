@@ -66,14 +66,14 @@ viz_3_tab <- tabPanel("Viz 3 tab title",
 
 ## CONCLUSIONS TAB INFO
 
-conclusion_tab <- tabPanel("Conclusion Tab Title",
+conclusion_tab <- tabPanel("Conclusion",
  h1("Some title"),
  p("some conclusions")
 )
 
 
 
-ui <- navbarPage("Example Project Title",
+ui <- navbarPage("Global Economy and Climate Change",
   overview_tab,
   viz_1_tab,
   viz_2_tab,

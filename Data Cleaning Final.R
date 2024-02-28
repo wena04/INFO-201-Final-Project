@@ -112,5 +112,7 @@ final_df <- final_df %>% mutate(population_category = case_when(Population < 5 ~
 #renaming the columns in the dataframe
 final_df <- final_df %>% rename("CO2_emissions"=`CO2 emissions per capita (metric tons)`,"Total_investment" = `Total investment`)
 
+#saving the final dataframe as a csv file
+write.csv(final_df,"final_df.csv")
 #reording the columns to look neater
 #final_df <- final_df %>% select(Country,Year,CO2_emissions,co2_category)
