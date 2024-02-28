@@ -13,6 +13,8 @@ overview_tab <- tabPanel("Overview Tab Title",
 viz_1_sidebar <- sidebarPanel(
   h2("Options for graph"),
   #TODO: Put inputs for modifying graph here
+  checkboxInput(input = "test_id",label = "The")
+  
 )
 
 viz_1_main_panel <- mainPanel(
