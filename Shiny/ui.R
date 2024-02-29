@@ -1,9 +1,6 @@
 library(plotly)
 library(ggplot2)
 
-## Theme for the document
-
-
 ## OVERVIEW TAB INFO
 
 overview_tab <- tabPanel("Introduction",
@@ -23,10 +20,10 @@ viz_1_sidebar <- sidebarPanel(
 
 viz_1_main_panel <- mainPanel(
   h2("Vizualization 1 Title",align = "center"),
-  plotlyOutput(outputId = "your_viz_1_output_id")
+  plotlyOutput(outputId = "World_map")
 )
 
-viz_1_tab <- tabPanel("Viz 1 tab title",
+viz_1_tab <- tabPanel("Heat Map",
   sidebarLayout(
     viz_1_sidebar,
     viz_1_main_panel 
