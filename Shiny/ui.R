@@ -1,11 +1,15 @@
 library(plotly)
 library(ggplot2)
-
+library(maps)
+library(dplyr)
+library(stringr)
+library(bslib)
+library(shiny)
+library(markdown)
 ## OVERVIEW TAB INFO
 
 overview_tab <- tabPanel("Introduction",
    h1("Global Economy and Climate Change",align = "center"),
-   hr(),
    HTML('<center><img src="Photo 1.jpg"></center>'),
    includeMarkdown("Intro Text.md")
 )
@@ -13,9 +17,10 @@ overview_tab <- tabPanel("Introduction",
 ## VIZ 1 TAB INFO
 
 viz_1_sidebar <- sidebarPanel(
-  h2("Options for graph"),
   #TODO: Put inputs for modifying graph here
-  
+  column(4, sliderInput("Heat_slider", label = h2("Select Date"), min = 1990, 
+                        max = 2010, value = 2000)),
+  hr(),
 )
 
 viz_1_main_panel <- mainPanel(
@@ -77,7 +82,8 @@ conclusion_tab <- tabPanel("Conclusion",
 
 
 
-ui <- navbarPage("Global Economy and Climate Change",
+ui <- navbarPage("INFO 201 Final Project",
+  theme = bs_theme(background = "#E8F2F9", foreground = "#959BA2",primary = "#E46410",success = "#34A853"),
   overview_tab,
   viz_1_tab,
   viz_2_tab,

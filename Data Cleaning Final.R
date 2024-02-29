@@ -25,7 +25,7 @@ wb_df <- wb_df %>%
     Year = as.integer(gsub("X", "", Year)) # Convert the year to an integer and remove the 'X' prefix
   ) %>% select(Country.name,Series.name,Year,Value)
 #filtering to only keep the CO2 Emissions part of the dataframe
-wb_df <- wb_df %>% filter(Series.name == "CO2 emissions per capita (metric tons)")
+wb_df <- wb_df %>% filter(Series.name == "CO2 emissions per capita (metric tons)" | Series.name == "Cereal yield (kg per hectare)" )
 #converting all the CO2 Emissions from being rows to being columns
 wb_df <- wb_df %>%
   pivot_wider(
@@ -110,7 +110,7 @@ final_df <- final_df %>% mutate(co2_category = case_when(`CO2 emissions per capi
 final_df <- final_df %>% mutate(population_category = case_when(Population < 5 ~ "Small population",Population >= 5 & Population < 50 ~ "Medium population",Population >= 50 ~ "Large population",TRUE ~ "Not Classified"))
 
 #renaming the columns in the dataframe
-final_df <- final_df %>% rename("CO2_emissions"=`CO2 emissions per capita (metric tons)`,"Total_investment" = `Total investment`)
+final_df <- final_df %>% rename("CO2_emissions"=`CO2 emissions per capita (metric tons)`,"Total_investment" = `Total investment`,"Cereal_yield" = `Cereal yield (kg per hectare)`)
 
 #saving the final dataframe as a csv file
 write.csv(final_df,"final_df.csv")
