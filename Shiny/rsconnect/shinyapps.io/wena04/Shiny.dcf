@@ -1,0 +1,12 @@
+name: Shiny
+title: Shiny
+username: wena04
+account: wena04
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11359449
+bundleId: 8309727
+url: https://wena04.shinyapps.io/Shiny/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
