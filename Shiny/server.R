@@ -142,13 +142,4 @@ server <- function(input, output, session) {
       })
     })
   })
-  
-  # ... rest of server logic ...
-  
-  #output$plot1 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Gdp)) + geom_point()) })
-  #output$plot2 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Gdp_per_cap)) + geom_point()) })
-  #output$plot3 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Average_temp )) + geom_point()) })
-  #output$plot4 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = CO2_emissions)) + geom_point()) })
-  #output$plot5 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Population)) + geom_point()) })
-  #output$plot6 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Cereal_yield)) + geom_point()) })
 }

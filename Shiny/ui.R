@@ -51,20 +51,6 @@ viz_2_main_panel <- mainPanel(
   fluidPage(
     uiOutput("dynamic_plots")
   )
-  
-  
-  # First row of graphs
-  #fluidRow(
-   # column(4, plotlyOutput("plot1")),
-    #column(4, plotlyOutput("plot2")),
-    #column(4, plotlyOutput("plot3"))
-  #),
-  # Second row of graphs
-  #fluidRow(
-   # column(4, plotlyOutput("plot4")),
-    #column(4, plotlyOutput("plot5")),
-    #column(4, plotlyOutput("plot6"))
-  #)
 )
 
 viz_2_tab <- tabPanel("Climate and Economy Characteristics",
