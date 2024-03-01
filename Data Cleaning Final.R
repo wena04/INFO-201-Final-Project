@@ -32,6 +32,15 @@ wb_df <- wb_df %>%
     names_from = "Series.name",
     values_from = "Value"
   )
+#changing all the values to be numeric and not characters and replacing NA values with 0
+wb_df <- wb_df %>%
+  mutate(`Cereal yield (kg per hectare)` = gsub("\\.\\.", 0, `Cereal yield (kg per hectare)`)) %>%
+  mutate(`Cereal yield (kg per hectare)` = gsub("[^0-9.]", "", `Cereal yield (kg per hectare)`)) %>%
+  mutate(`Cereal yield (kg per hectare)` = as.numeric(`Cereal yield (kg per hectare)`))
+wb_df <- wb_df %>%
+  mutate(`CO2 emissions per capita (metric tons)` = gsub("\\.\\.", 0, `CO2 emissions per capita (metric tons)`)) %>%
+  mutate(`CO2 emissions per capita (metric tons)` = gsub("[^0-9.]", "", `CO2 emissions per capita (metric tons)`)) %>%
+  mutate(`CO2 emissions per capita (metric tons)` = as.numeric(`CO2 emissions per capita (metric tons)`))
 
 #Summarizing the berk dataset to get the Average Temperature and Average Uncertainty of each year for each country from 1990 to 2010.
 
@@ -108,7 +117,6 @@ final_df <- final_df %>% mutate(development_status = case_when(Gdp_per_cap > 20 
 final_df <- final_df %>% mutate(co2_category = case_when(`CO2 emissions per capita (metric tons)` < 2 ~ "Low emissions",`CO2 emissions per capita (metric tons)` >= 2 & `CO2 emissions per capita (metric tons)` < 10 ~ "Medium emissions",`CO2 emissions per capita (metric tons)` >= 10 & `CO2 emissions per capita (metric tons)` < 20 ~ "High emissions",`CO2 emissions per capita (metric tons)` >= 20 ~ "Very high emissions",TRUE ~ "Not Classified"))
 #Classifying countries based on their population
 final_df <- final_df %>% mutate(population_category = case_when(Population < 5 ~ "Small population",Population >= 5 & Population < 50 ~ "Medium population",Population >= 50 ~ "Large population",TRUE ~ "Not Classified"))
-
 #renaming the columns in the dataframe
 final_df <- final_df %>% rename("CO2_emissions"=`CO2 emissions per capita (metric tons)`,"Total_investment" = `Total investment`,"Cereal_yield" = `Cereal yield (kg per hectare)`)
 

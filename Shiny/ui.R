@@ -6,6 +6,7 @@ library(stringr)
 library(bslib)
 library(shiny)
 library(markdown)
+library(gridExtra)
 ## OVERVIEW TAB INFO
 
 overview_tab <- tabPanel("Introduction",
@@ -14,18 +15,21 @@ overview_tab <- tabPanel("Introduction",
    includeMarkdown("Intro Text.md")
 )
 
-## VIZ 1 TAB INFO
+## HEAT MAP TAB INFO
 
 viz_1_sidebar <- sidebarPanel(
   #TODO: Put inputs for modifying graph here
-  column(4, sliderInput("Heat_slider", label = h2("Select Date"), min = 1990, 
+  column(12, sliderInput("Heat_slider", label = h2("Select Date"), min = 1990, 
                         max = 2010, value = 2000)),
   hr(),
 )
 
 viz_1_main_panel <- mainPanel(
-  h2("Vizualization 1 Title",align = "center"),
-  plotlyOutput(outputId = "World_map")
+  h2("Heat Map for Average Temperature & CO2 Emissions",align = "center"),
+  tabsetPanel(
+    tabPanel("Plot",plotlyOutput(outputId = "World_map")),
+    tabPanel("Summary",plotlyOutput(outputId = "CO2_map"))
+  )
 )
 
 viz_1_tab <- tabPanel("Heat Map",
@@ -35,19 +39,23 @@ viz_1_tab <- tabPanel("Heat Map",
   )
 )
 
-## VIZ 2 TAB INFO
+## INDIVIDUAL COUNTRY ANALYSIS TAB INFO
 
 viz_2_sidebar <- sidebarPanel(
-  h2("Options for graph"),
   #TODO: Put inputs for modifying graph here
+  column(12, selectInput("char_country_input", label = h3("Select Country"), choices = NULL, multiple = TRUE)),
+  column(12, selectInput("char_input", label = h3("Select Characteristics"), choices = NULL, multiple = TRUE))
 )
 
 viz_2_main_panel <- mainPanel(
-  h2("Vizualization 2 Title",align = "center"),
-  # plotlyOutput(outputId = "your_viz_1_output_id")
+  h2("Analyzing By Characteristics",align = "center"),
+  fluidRow(
+    column(6, plotOutput("gdp_graph")),
+    column(6, plotOutput("population_graph"))
+  )
 )
 
-viz_2_tab <- tabPanel("Viz 2 tab title",
+viz_2_tab <- tabPanel("Climate and Economy Characteristics",
   sidebarLayout(
     viz_2_sidebar,
     viz_2_main_panel
