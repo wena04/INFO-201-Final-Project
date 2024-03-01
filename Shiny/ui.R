@@ -44,7 +44,7 @@ viz_1_tab <- tabPanel("Heat Map",
 viz_2_sidebar <- sidebarPanel(
   #TODO: Put inputs for modifying graph here
   column(12, selectInput("char_country_input", label = h3("Select Country"), choices = NULL, multiple = TRUE)),
-  column(12, selectInput("char_input", label = h3("Select Characteristics"), choices = NULL, multiple = TRUE))
+  column(12, selectInput("char_input", "Select Characteristics", choices = NULL, multiple = TRUE))
 )
 
 viz_2_main_panel <- mainPanel(

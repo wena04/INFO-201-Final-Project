@@ -90,18 +90,20 @@ server <- function(input, output, session) {
   #Updating the options for users to select countries or characteristics
   observe({
     updateSelectInput(session, "char_country_input", choices = final_df$Country, selected = "China")
-    updateSelectInput(session, "char_input", choices = characteristic_choice, selected = "Carbon Dioxide Emissions")
+    updateSelectInput(session, "char_input", choices = list(
+      "GDP" = "plot1",
+      "GDP per Capita" = "plot2",
+      "Average Temperature" = "plot3",
+      "CO2 Emissions" = "plot4",
+      "Population" = "plot5",
+      "Cereal Yield" = "plot6"
+    ), selected = "plot1")
   })
   
-  selected_vars <- reactive({
-    req(input$char_input)
-    input$char_input
-  })
-  
-  output$plot1 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = mpg, y = disp)) + geom_point()) })
-  output$plot2 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = hp, y = disp)) + geom_point()) })
-  output$plot3 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = drat, y = wt)) + geom_point()) })
-  output$plot4 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = qsec, y = wt)) + geom_point()) })
-  output$plot5 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = vs, y = am)) + geom_point()) })
-  output$plot6 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = gear, y = carb)) + geom_point()) })
+  output$plot1 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Gdp)) + geom_point()) })
+  output$plot2 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Gdp_per_cap)) + geom_point()) })
+  output$plot3 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Average_temp )) + geom_point()) })
+  output$plot4 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = CO2_emissions)) + geom_point()) })
+  output$plot5 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Population)) + geom_point()) })
+  output$plot6 <- renderPlotly({ ggplotly(ggplot(data = final_df, aes(x = Year, y = Cereal_yield)) + geom_point()) })
 }
