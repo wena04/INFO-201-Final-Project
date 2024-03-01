@@ -93,37 +93,15 @@ server <- function(input, output, session) {
     updateSelectInput(session, "char_input", choices = characteristic_choice, selected = "Carbon Dioxide Emissions")
   })
   
-  # Generate sample data
-  set.seed(123)
-  countries <- c("USA", "Canada", "UK", "Germany", "France")
-  years <- 2000:2020
-  gdp <- runif(length(countries) * length(years), min = 1000, max = 10000)
-  population <- sample(1000000:10000000, length(countries) * length(years), replace = TRUE)
-  
-  # Create the dataframe
-  df <- expand.grid(Country = countries, Year = years)
-  df$GDP <- gdp
-  df$Population <- population
-  
-  output$gdp_graph <- renderPlot({
-    selected_countries <- input$country_input
-    graph_type <- input$graph_input
-    
-    df_subset <- df[df$Country %in% selected_countries, ]
-    
-    ggplot(df_subset, aes(x = Year, y = GDP, color = Country)) +
-      geom_line() +
-      labs(title = "GDP Over Time", x = "Year", y = "GDP")
+  selected_vars <- reactive({
+    req(input$char_input)
+    input$char_input
   })
   
-  output$population_graph <- renderPlot({
-    selected_countries <- input$country_input
-    graph_type <- input$graph_input
-    
-    df_subset <- df[df$Country %in% selected_countries, ]
-    
-    ggplot(df_subset, aes(x = Year, y = Population, color = Country)) +
-      geom_line() +
-      labs(title = "Population Over Time", x = "Year", y = "Population")
-  })
+  output$plot1 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = mpg, y = disp)) + geom_point()) })
+  output$plot2 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = hp, y = disp)) + geom_point()) })
+  output$plot3 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = drat, y = wt)) + geom_point()) })
+  output$plot4 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = qsec, y = wt)) + geom_point()) })
+  output$plot5 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = vs, y = am)) + geom_point()) })
+  output$plot6 <- renderPlotly({ ggplotly(ggplot(data = mtcars, aes(x = gear, y = carb)) + geom_point()) })
 }

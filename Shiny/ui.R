@@ -48,18 +48,24 @@ viz_2_sidebar <- sidebarPanel(
 )
 
 viz_2_main_panel <- mainPanel(
-  h2("Analyzing By Characteristics",align = "center"),
+  # First row of graphs
   fluidRow(
-    column(6, plotOutput("gdp_graph")),
-    column(6, plotOutput("population_graph"))
+    column(4, plotlyOutput("plot1")),
+    column(4, plotlyOutput("plot2")),
+    column(4, plotlyOutput("plot3"))
+  ),
+  # Second row of graphs
+  fluidRow(
+    column(4, plotlyOutput("plot4")),
+    column(4, plotlyOutput("plot5")),
+    column(4, plotlyOutput("plot6"))
   )
 )
 
 viz_2_tab <- tabPanel("Climate and Economy Characteristics",
-  sidebarLayout(
-    viz_2_sidebar,
-    viz_2_main_panel
-  )
+  h2("Analyzing By Characteristics",align = "center"),
+  fluidRow(viz_2_sidebar),
+  viz_2_main_panel
 )
 
 ## VIZ 3 TAB INFO
