@@ -90,11 +90,12 @@ conclusion_tab <- tabPanel("Conclusion",
 # Original: #E8F2F9
 #CFF09E
 #C6DAF2
+
 ui <- navbarPage("INFO 201 Final Project",
-             theme = bs_theme(background = "#79BD9A", foreground = "#959BA2",primary = "#E46410",success = "#34A853"),
-             overview_tab,
-             viz_1_tab,
-             viz_2_tab,
-             viz_3_tab,
-             conclusion_tab)
+theme = bs_theme(background = "#C6DAF2",foreground = "#959BA2",primary = "#E46410",success = "#34A853"),
+  overview_tab,
+  viz_1_tab,
+  viz_2_tab,
+  viz_3_tab,
+  conclusion_tab)
   
