@@ -7,7 +7,7 @@ library(bslib)
 library(shiny)
 #loading the final csv file from the data wrangling assignment
 final_df <- read.csv("www/final_df.csv")
-characteristic_choice <- c("GDP","GDP Per Capita","Population","Total Investment","Average Temperature","Carbon Dioxide Emissions")
+characteristic_mapping <- c("GDP" = "Gdp","GDP per Capita" = "Gdp_per_cap","Average Temperature" = "Average_temp","CO2 Emissions" = "CO2_emissions","Population" = "Population","Cereal Yield" = "Cereal_yield")
 
 server <- function(input, output, session) {
   
@@ -87,37 +87,32 @@ server <- function(input, output, session) {
     return(ggplotly(wmc, tooltip = "text"))
   })
   
-  
-  characteristic_mapping <- c(
-    "GDP" = "Gdp",
-    "GDP per Capita" = "Gdp_per_cap",
-    "Average Temperature" = "Average_temp",
-    "CO2 Emissions" = "CO2_emissions",
-    "Population" = "Population",
-    "Cereal Yield" = "Cereal_yield"
-  )
-  
   #Updating the options for users to select countries or characteristics
   observe({
-    updateSelectInput(session, "char_country_input", choices = final_df$Country, selected = "China")
-    updateSelectInput(session, "char_input", choices = names(characteristic_mapping), selected = "GDP")
+    updateSelectInput(session, "char_country_input", choices = unique(final_df$Country), selected = c("China","United States","Brazil","Argentina","Japan"))
+    updateSelectInput(session, "char_input", choices = names(characteristic_mapping), selected = c("GDP","Population","CO2 Emissions"))
+  })
+  
+  # Reactive expression for the filtered data
+  filtered_data <- reactive({
+    req(input$char_country_input)  # Ensure that input$char_country_input is not NULL
+    sel_country_df <- final_df %>% filter(Country %in% input$char_country_input)  # Use %in% for multiple selection
   })
   
   output$dynamic_plots <- renderUI({
     req(input$char_input)  # Ensure that input$char_input is not NULL
     selected_labels <- input$char_input  # Store the selected labels
-    
+
     # Use the mapping to get the actual dataframe column names
     selected_columns <- characteristic_mapping[selected_labels]
-    
     # Create a list of plot outputs only for the selected characteristics
     plot_output_list <- lapply(selected_labels, function(label) {
-      column(4, plotlyOutput(outputId = paste0("plot_", gsub(" ", "_", label))))
+      column(6, plotlyOutput(outputId = paste0("plot_", gsub(" ", "_", label))))
     })
     
-    # Create rows of plot outputs, grouping them by 3 per row as needed
-    plot_rows <- lapply(seq(1, length(plot_output_list), by = 3), function(i) {
-      fluidRow(plot_output_list[i:min(i+2, length(plot_output_list))])
+    # Create rows of plot outputs, grouping them by 2 per row as needed
+    plot_rows <- lapply(seq(1, length(plot_output_list), by = 2), function(i) {
+      fluidRow(plot_output_list[i:min(i+1, length(plot_output_list))])
     })
     
     # Combine all rows into a single UI element
@@ -126,6 +121,7 @@ server <- function(input, output, session) {
   
   # Create the renderPlotly outputs dynamically based on selected characteristics
   observe({
+    
     lapply(seq_along(input$char_input), function(i) {
       label <- input$char_input[i]
       column_name <- characteristic_mapping[[label]]
@@ -133,12 +129,10 @@ server <- function(input, output, session) {
       
       output[[output_id]] <- renderPlotly({
         # Generate the plot for the current characteristic using the actual dataframe column name
-        gg <- ggplot(data = final_df, aes_string(x = "Year", y = column_name)) +
-          geom_point() +
-          ggtitle(paste("Graph for", label))
-        
+        gg <- ggplot(data = filtered_data(),mapping = aes(x = .data$Year, y = .data[[column_name]], color = .data$Country, group = .data$Country)) + labs(title = paste("Graph for", label)) +
+          geom_line() + theme_gray()
         # Convert ggplot object to ggplotly
-        ggplotly(gg)
+        ggplotly(gg) 
       })
     })
   })
