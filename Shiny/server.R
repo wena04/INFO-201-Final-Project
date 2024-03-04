@@ -5,7 +5,7 @@ library(dplyr)
 library(stringr)
 library(bslib)
 library(shiny)
-library(gghighlight)
+
 #loading the final csv file from the data wrangling assignment
 final_df <- read.csv("www/final_df.csv")
 
@@ -48,16 +48,29 @@ server <- function(input, output, session) {
     #changing the color of the legend/scale on the right side along with its limits
     #changing the title of the graph and the theme 
     #render the plotly back to ui page
-    wmc <- ggplot(data = world_with_co2, aes(x = long, y = lat, group = group, fill = CO2_emissions, text = paste0("Country: ", region, "<br>", "Carbon Emissions Rate: ", CO2_emissions))) + scale_fill_continuous(low = "#F3E0A5", high = "#ED5A26", limits = c(0, 20)) + geom_polygon(aes(fill = CO2_emissions)) + labs(title = paste("Carbon Emissions By Country in", selected_year), fill = "CO2 (metric tons)") + theme_gray()
+    wmc <- ggplot(data = world_with_co2, aes(x = long, y = lat, group = group, fill = CO2_emissions, text = paste0("Country: ", region, "<br>", "CO2 emissions per capita: ", CO2_emissions))) + scale_fill_continuous(low = "#F3E0A5", high = "#ED5A26", limits = c(0, 20)) + geom_polygon(aes(fill = CO2_emissions)) + labs(title = paste("Carbon Emissions By Country in", selected_year), fill = "CO2 per capita (metric tons)") + theme_gray()
     return(ggplotly(wmc, tooltip = "text"))
   })
+  
+  #plotting graph for average temperature vs carbon dioxide emissions
+  output$Develop_map <- renderPlotly({
+    g2 <- ggplot(data = final_df, aes(x = CO2_emissions, y = Average_temp))+
+      geom_point(aes(color = economic_status,text = Country))+
+      facet_wrap(~economic_status, nrow = 2)+
+      labs(title = "Average Temperature VS CO2 Emissions per Capita", x = "Carbon Dioxide Emissions", y = "Average Temperature" )
+    return(ggplotly(g2, tooltip = c("text", "Average_temp", "CO2_emissions")))
+  })
+  
+  
+  
   
   #Tab 2 Server Side Information
   #Updating the options for users to select countries or characteristics based on user status. search up selectize to understand more.
   observe({
     updateSelectInput(session, "char_country_input", choices = unique(final_df$Country), selected = c("United States","China","Japan"))
     updateSelectInput(session, "char_input", choices = names(characteristic_mapping), selected = c("CO2 Emissions","Population"))
-    })
+    updateSelectInput(session, "CountryName", choices = unique(final_df$Country), selected = "United States")
+  })
   
   # Reactive expression/function for the filtered data to check user movements
   filtered_data <- reactive({
@@ -93,9 +106,16 @@ server <- function(input, output, session) {
       column_name <- characteristic_mapping[[label]]
       output_id <- paste0("plot_", gsub(" ", "_", label))
       
+      #getting the corresponding units for each thing
+      if(label == "GDP" | label == "GDP per Capita") units <- " U.S. dollars (Billions)"
+      if(label == "Average Temperature") units <- " (Celcius)"
+      if(label == "CO2 Emissions") units <- " per capita (metric tons)"
+      if(label == "Population") units <- " (Millions)"
+      if(label == "Cereal Yield") units <- " (kg per hectar)"
+      
       output[[output_id]] <- renderPlotly({
         # Generate the plot for the current characteristic using the actual dataframe column name
-        gg <- ggplot(data = filtered_data(),mapping = aes(x = .data$Year, y = .data[[column_name]], color = .data$Country, group = .data$Country, text = paste0("Year: ",Year, "<br>",label,": ",.data[[column_name]],"<br>","Country: ",.data$Country))) + labs(title = paste("Graph for", label)) + geom_line() + theme_gray()
+        gg <- ggplot(data = filtered_data(),mapping = aes(x = .data$Year, y = .data[[column_name]], color = .data$Country, group = .data$Country, text = paste0("Year: ",Year, "<br>",label,": ",.data[[column_name]],"<br>","Country: ",.data$Country))) + labs(title = paste("Graph for", label), x = "Year", y = paste0(label,units)) + geom_line() + theme_gray()
         # Convert ggplot object to ggplotly
         pp <- ggplotly(gg, tooltip = "text")
       })
@@ -106,7 +126,7 @@ server <- function(input, output, session) {
   
   filtered_data_3 <- reactive({
     req(input$CountryName)  # Ensure that input$char_country_input is not NULL
-    sel_country_df_3 <- final_df %>% filter(Country == input$CountryName) %>% select(Country, Year, CO2_emissions,Average_temp)
+    sel_country_df_3 <- final_df %>% filter(Country == input$CountryName) %>% select(Country, Year, CO2_emissions,Average_temp,Cereal_yield,Gdp_per_cap)
   })
   
   #Plotting graph comparing CO2 & Average Temperature    
@@ -115,21 +135,74 @@ server <- function(input, output, session) {
     p <- plot_ly(data = filtered_data_3(), x = ~Year)
     # Add the first trace for CO2 emissions on the primary y-axis
     p <- add_trace(p, y = ~CO2_emissions, name = 'CO2 Emissions', mode = 'lines', 
-                   line = list(color = "#ff7f0e"), hoverinfo = 'x+y+name')
+                   line = list(color = "#ff7f0e"))
     # Add the second trace for Average Temperature on the secondary y-axis
-    p <- add_trace(p, y = ~Average_temp, name = 'Average Temp', mode = 'lines', 
-                   line = list(color = "#00BFC4"), yaxis = 'y2', hoverinfo = 'x+y+name')
+    p <- add_trace(p, y = ~Average_temp, name = 'Average Temperature', mode = 'lines', 
+                   line = list(color = "#00BFC4"), yaxis = 'y2')
     # Set the layout for the secondary y-axis
     p <- layout(p,
-                title = "CO2 Emissions and Average Temperature Over Time",
+                title = "CO2 Emissions per capita and Average Temperature Over Time",
                 yaxis2 = list(
                   overlaying = "y",
                   side = "right",
                   tickfont = list(color = '#00BFC4', size=11),color = '#00BFC4',title = "Average Temperature (C)"
                 ),
                 yaxis = list(
-                  title = "CO2 Emissions in metric tons", tickfont = list(color = '#ff7f0e', size=11), color='#ff7f0e'
-                )
+                  title = "CO2 Emissions per capita (metric tons)", tickfont = list(color = '#ff7f0e', size=11), color='#ff7f0e'
+                ),
+                hovermode = "x unified"
+    )
+    return(p)
+  })
+  
+  #Plotting graph comparing CO2 & Average Temperature    
+  output$Tem_AG <- renderPlotly({
+    
+    p <- plot_ly(data = filtered_data_3(), x = ~Year)
+    # Add the first trace for CO2 emissions on the primary y-axis
+    p <- add_trace(p, y = ~Average_temp, name = 'Average Temperature (C)', mode = 'lines', 
+                   line = list(color = "#ff7f0e"))
+    # Add the second trace for Average Temperature on the secondary y-axis
+    p <- add_trace(p, y = ~Cereal_yield, name = 'Cereal Yield (kg per hectare)', mode = 'lines', 
+                   line = list(color = "#00BFC4"), yaxis = 'y2')
+    # Set the layout for the secondary y-axis
+    p <- layout(p,
+                title = "Average Temperature and Cereal Yield",
+                yaxis2 = list(
+                  overlaying = "y",
+                  side = "right",
+                  tickfont = list(color = '#00BFC4', size=11),color = '#00BFC4',title = "Average Temperature (C)"
+                ),
+                yaxis = list(
+                  title = "Cereal Yield (kg per hectare)", tickfont = list(color = '#ff7f0e', size=11), color='#ff7f0e'
+                ), 
+                hovermode = "x unified"
+    )
+    return(p)
+  })
+  
+  #Plotting graph comparing CO2 & Average Temperature    
+  output$Cereal_GDP <- renderPlotly({
+    
+    p <- plot_ly(data = filtered_data_3(), x = ~Year)
+    # Add the first trace for CO2 emissions on the primary y-axis
+    p <- add_trace(p, y = ~Cereal_yield, name = 'Cereal Yield', mode = 'lines', 
+                   line = list(color = "#ff7f0e"))
+    # Add the second trace for Average Temperature on the secondary y-axis
+    p <- add_trace(p, y = ~Gdp_per_cap, name = 'GDP Per Capita', mode = 'lines', 
+                   line = list(color = "#00BFC4"), yaxis = 'y2')
+    # Set the layout for the secondary y-axis
+    p <- layout(p,
+                title = "Cereal Yield and GDP per Capita Over Time",
+                yaxis2 = list(
+                  overlaying = "y",
+                  side = "right",
+                  tickfont = list(color = '#00BFC4', size=11),color = '#00BFC4',title = "Cereal Yield"
+                ),
+                yaxis = list(
+                  title = "GDP per Capita", tickfont = list(color = '#ff7f0e', size=11), color='#ff7f0e'
+                ),
+                hovermode = "x unified"
     )
     return(p)
   })

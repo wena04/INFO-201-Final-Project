@@ -46,7 +46,7 @@ wb_df <- wb_df %>%
 
 # filering to keep only the years 1990 to 2010 as that is kept consistent with the WEO dataset
 berk_df <- berk_df %>% mutate(dt = as.integer(str_sub(dt,1,4)))
-berk_df <- berk_df %>% filter((str_starts(dt, "199") | str_starts(dt, "20")) & !str_starts(dt, "2011") & !str_starts(dt, "2012") & !str_starts(dt, "2013"))
+berk_df <- berk_df %>% filter((str_starts(dt, "19") | str_starts(dt, "20")) & !str_starts(dt, "2011") & !str_starts(dt, "2012") & !str_starts(dt, "2013"))
 # creating a new column "Group" that will indicate which year group and country group a the averaged volumn will belong to. (Since we know there is 12 months a year)
 berk_df <- berk_df %>% mutate(Groups = ceiling(row_number()/12)) 
 #calculating the average temperature based on the groups
@@ -119,7 +119,13 @@ final_df <- final_df %>% mutate(co2_category = case_when(`CO2 emissions per capi
 final_df <- final_df %>% mutate(population_category = case_when(Population < 5 ~ "Small population",Population >= 5 & Population < 50 ~ "Medium population",Population >= 50 ~ "Large population",TRUE ~ "Not Classified"))
 #renaming the columns in the dataframe
 final_df <- final_df %>% rename("CO2_emissions"=`CO2 emissions per capita (metric tons)`,"Total_investment" = `Total investment`,"Cereal_yield" = `Cereal yield (kg per hectare)`)
-
+#making it so that all the 0 and NaN values are all changed to NA properly, so it is easy to filter them later on
+final_df$Gdp[final_df$Gdp == 0] <- NA
+final_df$Population[final_df$Population == 0] <- NA
+final_df$Total_investment[final_df$Total_investment == "n/a"] <- NA
+final_df$Gdp_per_cap[final_df$Gdp_per_cap == "NaN"] <- NA
+final_df$Cereal_yield[final_df$Cereal_yield == 0] <- NA
+final_df$CO2_emissions[final_df$CO2_emissions == 0] <- NA
 #saving the final dataframe as a csv file
 write.csv(final_df,"final_df.csv")
 

@@ -6,7 +6,7 @@ library(stringr)
 library(bslib)
 library(shiny)
 library(markdown)
-library(gridExtra)
+
 ## OVERVIEW TAB INFO
 
 overview_tab <- tabPanel("Introduction",
@@ -26,8 +26,9 @@ viz_1_sidebar <- sidebarPanel(
 
 viz_1_main_panel <- mainPanel(
   tabsetPanel(
-    tabPanel("Plot",plotlyOutput(outputId = "World_map")),
-    tabPanel("Summary",plotlyOutput(outputId = "CO2_map"))
+    tabPanel("Average Temperature",plotlyOutput("World_map")),
+    tabPanel("Carbon Dioxide Emissions",plotlyOutput("CO2_map")),
+    tabPanel("Country Development Levels",plotlyOutput("Develop_map"))
   )
 )
 
@@ -37,7 +38,8 @@ viz_1_tab <- tabPanel("Heat Map",
   sidebarLayout(
     viz_1_sidebar,
     viz_1_main_panel 
-  )
+  ),
+  p("Just going to put some random text here but this is supposed to be like a short introduction of some sort... asdfjas;lkdjfl;kasjdf;lkasjdf;lksajdl;kfjas;lkdfj;lskadjf;lksajd;lfkjas;ldfjas;lkdjf;laskjdf;oai whsepfoiawhje sd;flkasj dfoi;qu2h3jw e;lksjha zelfkiuh qj2;woelifj aw;sdklfh q;woaiejr ;alskdjf ;aslkdfj q[2woi34tj a'slkdfj [q2i9ej as;lkdjf ;slkdfj a;owieh kjshdfjkhkhh']asdlf;kjq;lsdhjfaspdeirhqlkawndfa;sldkfj2o4iansld;fkanwerioasjkdfhase;lrkjqwpe9fuhas;ldkfjas;lkdjf apw9eiotrh a;lskdfj asp9deifh ;awlkej pas9difhj as;lkdfj apw9er8th a;soidfj apwse98th ;oasiej ;oawiejf o;aksjdf;o sajf o;ijwaef;o jaweo")
 )
 
 ## INDIVIDUAL COUNTRY ANALYSIS TAB INFO
@@ -57,7 +59,8 @@ viz_2_main_panel <- mainPanel(
 viz_2_tab <- tabPanel("Climate and Economy Characteristics",
   h2("Analyzing By Characteristics",align = "center"),
   p("Just going to put some random text here but this is supposed to be like a short introduction of some sort... asdfjas;lkdjfl;kasjdf;lkasjdf;lksajdl;kfjas;lkdfj;lskadjf;lksajd;lfkjas;ldfjas;lkdjf;laskjdf;oai whsepfoiawhje sd;flkasj dfoi;qu2h3jw e;lksjha zelfkiuh qj2;woelifj aw;sdklfh q;woaiejr ;alskdjf ;aslkdfj q[2woi34tj a'slkdfj [q2i9ej as;lkdjf ;slkdfj a;owieh kjshdfjkhkhh']asdlf;kjq;lsdhjfaspdeirhqlkawndfa;sldkfj2o4iansld;fkanwerioasjkdfhase;lrkjqwpe9fuhas;ldkfjas;lkdjf apw9eiotrh a;lskdfj asp9deifh ;awlkej pas9difhj as;lkdfj apw9er8th a;soidfj apwse98th ;oasiej ;oawiejf o;aksjdf;o sajf o;ijwaef;o jaweo"),
-  fluidRow(viz_2_sidebar,viz_2_main_panel)
+  fluidRow(viz_2_sidebar,viz_2_main_panel),
+  p("Just going to put some random text here but this is supposed to be like a short introduction of some sort... asdfjas;lkdjfl;kasjdf;lkasjdf;lksajdl;kfjas;lkdfj;lskadjf;lksajd;lfkjas;ldfjas;lkdjf;laskjdf;oai whsepfoiawhje sd;flkasj dfoi;qu2h3jw e;lksjha zelfkiuh qj2;woelifj aw;sdklfh q;woaiejr ;alskdjf ;aslkdfj q[2woi34tj a'slkdfj [q2i9ej as;lkdjf ;slkdfj a;owieh kjshdfjkhkhh']asdlf;kjq;lsdhjfaspdeirhqlkawndfa;sldkfj2o4iansld;fkanwerioasjkdfhase;lrkjqwpe9fuhas;ldkfjas;lkdjf apw9eiotrh a;lskdfj asp9deifh ;awlkej pas9difhj as;lkdfj apw9er8th a;soidfj apwse98th ;oasiej ;oawiejf o;aksjdf;o sajf o;ijwaef;o jaweo")
 )
 
 ## VIZ 3 TAB INFO
@@ -66,7 +69,7 @@ viz_3_sidebar <- sidebarPanel(
   h2("Select a country"),
   selectInput("CountryName", 
               label = "select country",
-              choices = unique(final_df$Country),
+              choices = NULL,
               multiple = FALSE, selected = "United States")
   
 )
@@ -74,10 +77,9 @@ viz_3_sidebar <- sidebarPanel(
 viz_3_main_panel <- mainPanel(
   tabsetPanel(
     tabPanel("CO2 Emission & Average Temperature", plotlyOutput("CO2_Tem")),
-    tabPanel("Average Temperature & Agriculture" , plotlyOutput("Tem_AG")),
-    tabPanel("Agriculture & Economy", plotlyOutput("Cereal_GDP"))
+    tabPanel("Average Temperature & Cereal Yield" , plotlyOutput("Tem_AG")),
+    tabPanel("Cereal Yield & Economy", plotlyOutput("Cereal_GDP"))
   )
-  # plotlyOutput(outputId = "your_viz_1_output_id")
 )
 
 viz_3_tab <- tabPanel("Exploring how globol warming impact world economy",
@@ -86,7 +88,8 @@ viz_3_tab <- tabPanel("Exploring how globol warming impact world economy",
                       sidebarLayout(
                         viz_3_sidebar,
                         viz_3_main_panel
-                      )
+                      ),
+                      p("Just going to put some random text here but this is supposed to be like a short introduction of some sort... asdfjas;lkdjfl;kasjdf;lkasjdf;lksajdl;kfjas;lkdfj;lskadjf;lksajd;lfkjas;ldfjas;lkdjf;laskjdf;oai whsepfoiawhje sd;flkasj dfoi;qu2h3jw e;lksjha zelfkiuh qj2;woelifj aw;sdklfh q;woaiejr ;alskdjf ;aslkdfj q[2woi34tj a'slkdfj [q2i9ej as;lkdjf ;slkdfj a;owieh kjshdfjkhkhh']asdlf;kjq;lsdhjfaspdeirhqlkawndfa;sldkfj2o4iansld;fkanwerioasjkdfhase;lrkjqwpe9fuhas;ldkfjas;lkdjf apw9eiotrh a;lskdfj asp9deifh ;awlkej pas9difhj as;lkdfj apw9er8th a;soidfj apwse98th ;oasiej ;oawiejf o;aksjdf;o sajf o;ijwaef;o jaweo")
 )
 
 ## CONCLUSIONS TAB INFO
