@@ -63,20 +63,30 @@ viz_2_tab <- tabPanel("Climate and Economy Characteristics",
 ## VIZ 3 TAB INFO
 
 viz_3_sidebar <- sidebarPanel(
-  h2("Options for graph"),
-  #TODO: Put inputs for modifying graph here
+  h2("Select a country"),
+  selectInput("CountryName", 
+              label = "select country",
+              choices = unique(final_df$Country),
+              multiple = FALSE, selected = "United States")
+  
 )
 
 viz_3_main_panel <- mainPanel(
-  h2("Vizualization 3 Title"),
+  tabsetPanel(
+    tabPanel("CO2 Emission & Average Temperature", plotlyOutput("CO2_Tem")),
+    tabPanel("Average Temperature & Agriculture" , plotlyOutput("Tem_AG")),
+    tabPanel("Agriculture & Economy", plotlyOutput("Cereal_GDP"))
+  )
   # plotlyOutput(outputId = "your_viz_1_output_id")
 )
 
-viz_3_tab <- tabPanel("Viz 3 tab title",
-  sidebarLayout(
-    viz_3_sidebar,
-    viz_3_main_panel
-  )
+viz_3_tab <- tabPanel("Exploring how globol warming impact world economy",
+                      h2("Analyzing the relation between each characteristics", align = "center"),
+                      p("On this page we will explore how  CO2 Emssion impact Globle Economy"),
+                      sidebarLayout(
+                        viz_3_sidebar,
+                        viz_3_main_panel
+                      )
 )
 
 ## CONCLUSIONS TAB INFO

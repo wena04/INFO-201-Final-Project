@@ -55,8 +55,8 @@ server <- function(input, output, session) {
   #Tab 2 Server Side Information
   #Updating the options for users to select countries or characteristics based on user status. search up selectize to understand more.
   observe({
-    updateSelectInput(session, "char_country_input", choices = unique(final_df$Country), selected = c("China","United States","Brazil","Argentina","Japan"))
-    updateSelectInput(session, "char_input", choices = names(characteristic_mapping), selected = c("GDP","Population","CO2 Emissions"))
+    updateSelectInput(session, "char_country_input", choices = unique(final_df$Country), selected = c("United States","China","Japan"))
+    updateSelectInput(session, "char_input", choices = names(characteristic_mapping), selected = c("CO2 Emissions","Population"))
     })
   
   # Reactive expression/function for the filtered data to check user movements
@@ -102,158 +102,36 @@ server <- function(input, output, session) {
     })
   })
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   #Tab 3 server side information
+  
+  filtered_data_3 <- reactive({
+    req(input$CountryName)  # Ensure that input$char_country_input is not NULL
+    sel_country_df_3 <- final_df %>% filter(Country == input$CountryName) %>% select(Country, Year, CO2_emissions,Average_temp)
+  })
+  
+  #Plotting graph comparing CO2 & Average Temperature    
+  output$CO2_Tem <- renderPlotly({
+    
+    p <- plot_ly(data = filtered_data_3(), x = ~Year)
+    # Add the first trace for CO2 emissions on the primary y-axis
+    p <- add_trace(p, y = ~CO2_emissions, name = 'CO2 Emissions', mode = 'lines', 
+                   line = list(color = "#ff7f0e"), hoverinfo = 'x+y+name')
+    # Add the second trace for Average Temperature on the secondary y-axis
+    p <- add_trace(p, y = ~Average_temp, name = 'Average Temp', mode = 'lines', 
+                   line = list(color = "#00BFC4"), yaxis = 'y2', hoverinfo = 'x+y+name')
+    # Set the layout for the secondary y-axis
+    p <- layout(p,
+                title = "CO2 Emissions and Average Temperature Over Time",
+                yaxis2 = list(
+                  overlaying = "y",
+                  side = "right",
+                  tickfont = list(color = '#00BFC4', size=11),color = '#00BFC4',title = "Average Temperature (C)"
+                ),
+                yaxis = list(
+                  title = "CO2 Emissions in metric tons", tickfont = list(color = '#ff7f0e', size=11), color='#ff7f0e'
+                )
+    )
+    return(p)
+  })
   
 }
