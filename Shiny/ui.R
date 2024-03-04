@@ -18,8 +18,9 @@ overview_tab <- tabPanel("Introduction",
 ## HEAT MAP TAB INFO
 
 viz_1_sidebar <- sidebarPanel(
-  #TODO: Put inputs for modifying graph here
-  column(12, sliderInput("Heat_slider", label = h2("Select Date"), min = 1990, 
+  p("Graph may take a second to load"),
+  h3("Move slider to select a date"),
+  column(12, sliderInput("Heat_slider", label = "Select Date", min = 1990, 
                         max = 2010, value = 2000)),
   hr(),
 )
@@ -32,7 +33,7 @@ viz_1_main_panel <- mainPanel(
   )
 )
 
-viz_1_tab <- tabPanel("Heat Map",
+viz_1_tab <- tabPanel("World Maps with Temperature and CO2",
   h2("Heat Map for Average Temperature & CO2 Emissions",align = "center"),
   p("Just going to put some random text here but this is supposed to be like a short introduction of some sort... asdfjas;lkdjfl;kasjdf;lkasjdf;lksajdl;kfjas;lkdfj;lskadjf;lksajd;lfkjas;ldfjas;lkdjf;laskjdf;oai whsepfoiawhje sd;flkasj dfoi;qu2h3jw e;lksjha zelfkiuh qj2;woelifj aw;sdklfh q;woaiejr ;alskdjf ;aslkdfj q[2woi34tj a'slkdfj [q2i9ej as;lkdjf ;slkdfj a;owieh kjshdfjkhkhh']asdlf;kjq;lsdhjfaspdeirhqlkawndfa;sldkfj2o4iansld;fkanwerioasjkdfhase;lrkjqwpe9fuhas;ldkfjas;lkdjf apw9eiotrh a;lskdfj asp9deifh ;awlkej pas9difhj as;lkdfj apw9er8th a;soidfj apwse98th ;oasiej ;oawiejf o;aksjdf;o sajf o;ijwaef;o jaweo"),
   sidebarLayout(
@@ -45,9 +46,10 @@ viz_1_tab <- tabPanel("Heat Map",
 ## INDIVIDUAL COUNTRY ANALYSIS TAB INFO
 
 viz_2_sidebar <- sidebarPanel(
-  #TODO: Put inputs for modifying graph here
-  selectInput("char_country_input", label = h3("Select Country"), choices = NULL, multiple = TRUE),
-  selectInput("char_input", label = h3("Select Characteristics"), choices = NULL, multiple = TRUE),
+  p("Graph may take a second to load"),
+  h3("Try selecting more characteristics"),
+  selectInput("char_country_input", label = "Select Country", choices = NULL, multiple = TRUE),
+  selectInput("char_input", label = "Select Characteristics", choices = NULL, multiple = TRUE),
   width = 3
 )
 
@@ -66,7 +68,8 @@ viz_2_tab <- tabPanel("Climate and Economy Characteristics",
 ## VIZ 3 TAB INFO
 
 viz_3_sidebar <- sidebarPanel(
-  h2("Select a country"),
+  p("Graph may take a second to load"),
+  h3("Hover over the lines for more info"),
   selectInput("CountryName", 
               label = "select country",
               choices = NULL,
@@ -105,7 +108,7 @@ conclusion_tab <- tabPanel("Conclusion",
 #C6DAF2
 
 ui <- navbarPage("INFO 201 Final Project",
-theme = bs_theme(background = "#C6DAF2",foreground = "#959BA2",primary = "#E46410",success = "#34A853"),
+  theme = bs_theme(background = "#C6DAF2",foreground = "#959BA2",primary = "#E46410",success = "#34A853"),
   overview_tab,
   viz_1_tab,
   viz_2_tab,

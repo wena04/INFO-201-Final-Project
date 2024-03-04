@@ -5,7 +5,7 @@ library(dplyr)
 library(stringr)
 library(bslib)
 library(shiny)
-
+library(viridis)
 #loading the final csv file from the data wrangling assignment
 final_df <- read.csv("www/final_df.csv")
 
@@ -26,10 +26,10 @@ server <- function(input, output, session) {
     world_with_temp <-
       world_map %>% left_join(sel_year_df, by = c("region" = "Country"))
     #plotting the graph, filling each country shape with the average temperature
-    #changing the color of the legend/scale on the right side along with its limits
+    #changing the color of the legend/scale on the right side along with its limits "scale_fill_continuous(low = "#F3E0A5", high = "#ED5A26", limits = c(-10, 30))"
     #changing the title of the graph and the theme
     #render the plotly back to ui page
-    wm <- ggplot(data = world_with_temp,aes(x = long, y = lat, group = group, fill = Average_temp, text = paste0("Country: ", region, "<br>", "Average Temperature: ", round(Average_temp, 5)))) + scale_fill_continuous(low = "#F3E0A5", high = "#ED5A26", limits = c(-10, 30)) + geom_polygon(aes(fill = Average_temp)) + labs(title = paste("Average Temperature By Country in", selected_year), fill = "Temperature (C)") + theme_gray()
+    wm <- ggplot(data = world_with_temp,aes(x = long, y = lat, group = group, fill = Average_temp, text = paste0("Country: ", region, "<br>", "Average Temperature: ", round(Average_temp, 5)))) + scale_fill_viridis_c(option = "magma", direction = -1, limits = c(-10, 30)) + geom_polygon(aes(fill = Average_temp)) + labs(title = paste("Average Temperature By Country in", selected_year), fill = "Temperature (C)") + theme(panel.background = element_rect(fill = "#e5ecf6"))
     return(ggplotly(wm, tooltip = "text"))
   })
   
@@ -48,7 +48,7 @@ server <- function(input, output, session) {
     #changing the color of the legend/scale on the right side along with its limits
     #changing the title of the graph and the theme 
     #render the plotly back to ui page
-    wmc <- ggplot(data = world_with_co2, aes(x = long, y = lat, group = group, fill = CO2_emissions, text = paste0("Country: ", region, "<br>", "CO2 emissions per capita: ", CO2_emissions))) + scale_fill_continuous(low = "#F3E0A5", high = "#ED5A26", limits = c(0, 20)) + geom_polygon(aes(fill = CO2_emissions)) + labs(title = paste("Carbon Emissions By Country in", selected_year), fill = "CO2 per capita (metric tons)") + theme_gray()
+    wmc <- ggplot(data = world_with_co2, aes(x = long, y = lat, group = group, fill = CO2_emissions, text = paste0("Country: ", region, "<br>", "CO2 emissions per capita: ", CO2_emissions))) + scale_fill_viridis_c(option = "viridis",direction = -1,begin = 0.7, limits = c(0, 20)) + geom_polygon(aes(fill = CO2_emissions)) + labs(title = paste("Carbon Emissions By Country in", selected_year), fill = "CO2 per capita (metric tons)") + theme(panel.background = element_rect(fill = "#e5ecf6"))
     return(ggplotly(wmc, tooltip = "text"))
   })
   
@@ -57,7 +57,8 @@ server <- function(input, output, session) {
     g2 <- ggplot(data = final_df, aes(x = CO2_emissions, y = Average_temp))+
       geom_point(aes(color = economic_status,text = Country))+
       facet_wrap(~economic_status, nrow = 2)+
-      labs(title = "Average Temperature VS CO2 Emissions per Capita", x = "Carbon Dioxide Emissions", y = "Average Temperature" )
+      labs(title = "Average Temperature VS CO2 Emissions per Capita", x = "Carbon Dioxide Emissions", y = "Average Temperature")+scale_color_viridis(discrete = TRUE, option = "D",direction = -1)+
+      scale_fill_viridis(discrete = TRUE,direction = -1) +theme(panel.background = element_rect(fill = "#e5ecf6"))
     return(ggplotly(g2, tooltip = c("text", "Average_temp", "CO2_emissions")))
   })
   
@@ -115,9 +116,41 @@ server <- function(input, output, session) {
       
       output[[output_id]] <- renderPlotly({
         # Generate the plot for the current characteristic using the actual dataframe column name
-        gg <- ggplot(data = filtered_data(),mapping = aes(x = .data$Year, y = .data[[column_name]], color = .data$Country, group = .data$Country, text = paste0("Year: ",Year, "<br>",label,": ",.data[[column_name]],"<br>","Country: ",.data$Country))) + labs(title = paste("Graph for", label), x = "Year", y = paste0(label,units)) + geom_line() + theme_gray()
+        gg <- ggplot(data = filtered_data(),mapping = aes(x = .data$Year, y = .data[[column_name]], color = .data$Country, group = .data$Country, text = paste0("Year: ",Year, "<br>",label,": ",.data[[column_name]],"<br>","Country: ",.data$Country))) + labs(title = paste("Graph for", label), x = "Year", y = paste0(label,units)) + scale_color_viridis(discrete = TRUE, option = "D") + scale_fill_viridis(discrete = TRUE) + geom_line() + theme(panel.background = element_rect(fill = "#e5ecf6"))
         # Convert ggplot object to ggplotly
         pp <- ggplotly(gg, tooltip = "text")
+      
+        # Add JavaScript code to capture hover events and make the lines highlight or unhighlight based on where mouse is
+        pp <- htmlwidgets::onRender(pp, "
+          function(el, x) {
+            // Store original colors
+            var originalColors = [];
+            var updateColors = function(hoveredTraceIndex) {
+              // Update to set the hovered line to its original color, others to 'lightgray'
+              var newColors = originalColors.map(function(color, index) {
+                return index === hoveredTraceIndex ? originalColors[hoveredTraceIndex] : 'lightgray';
+              });
+              Plotly.restyle(el, {'line.color': newColors});
+            };
+
+          el.on('plotly_beforehover', function() {
+            if (originalColors.length === 0) { // Initialize original colors once
+              originalColors = x.data.map(function(trace) { return trace.line.color; });
+            }
+          });
+
+          el.on('plotly_hover', function(data) {
+            var hoveredTraceIndex = data.points[0].curveNumber;
+            updateColors(hoveredTraceIndex);
+          });
+
+          el.on('plotly_unhover', function(data) {
+            // Revert to original colors when not hovering over any trace
+            Plotly.restyle(el, {'line.color': originalColors});
+            });
+          }
+        ")
+        return(pp)
       })
     })
   })
@@ -129,7 +162,7 @@ server <- function(input, output, session) {
     sel_country_df_3 <- final_df %>% filter(Country == input$CountryName) %>% select(Country, Year, CO2_emissions,Average_temp,Cereal_yield,Gdp_per_cap)
   })
   
-  #Plotting graph comparing CO2 & Average Temperature    
+  #Plotting graph comparing CO2 & Average Temperature (Tab 3)   
   output$CO2_Tem <- renderPlotly({
     
     p <- plot_ly(data = filtered_data_3(), x = ~Year)
@@ -142,6 +175,7 @@ server <- function(input, output, session) {
     # Set the layout for the secondary y-axis
     p <- layout(p,
                 title = "CO2 Emissions per capita and Average Temperature Over Time",
+                plot_bgcolor='#e5ecf6',
                 yaxis2 = list(
                   overlaying = "y",
                   side = "right",
@@ -155,19 +189,20 @@ server <- function(input, output, session) {
     return(p)
   })
   
-  #Plotting graph comparing CO2 & Average Temperature    
+  #Plotting graph comparing CO2 & Cereal Yield per Capita (Tab 3)    
   output$Tem_AG <- renderPlotly({
     
     p <- plot_ly(data = filtered_data_3(), x = ~Year)
-    # Add the first trace for CO2 emissions on the primary y-axis
+    # Add the first trace for Average Temperature on the primary y-axis on the left
     p <- add_trace(p, y = ~Average_temp, name = 'Average Temperature (C)', mode = 'lines', 
                    line = list(color = "#ff7f0e"))
-    # Add the second trace for Average Temperature on the secondary y-axis
+    # Add the second trace for Cereal yield per capita on the secondary y-axis on the right
     p <- add_trace(p, y = ~Cereal_yield, name = 'Cereal Yield (kg per hectare)', mode = 'lines', 
                    line = list(color = "#00BFC4"), yaxis = 'y2')
-    # Set the layout for the secondary y-axis
+    # Set the layout for the secondary y-axis 
     p <- layout(p,
                 title = "Average Temperature and Cereal Yield",
+                plot_bgcolor='#e5ecf6', 
                 yaxis2 = list(
                   overlaying = "y",
                   side = "right",
@@ -181,19 +216,20 @@ server <- function(input, output, session) {
     return(p)
   })
   
-  #Plotting graph comparing CO2 & Average Temperature    
+  #Plotting graph comparing Cereal Yield per Capita and Gdp per capita (Tab 3)
   output$Cereal_GDP <- renderPlotly({
     
     p <- plot_ly(data = filtered_data_3(), x = ~Year)
-    # Add the first trace for CO2 emissions on the primary y-axis
+    # Add the first trace for Cereal Yield per Capita on the primary y-axis on the left
     p <- add_trace(p, y = ~Cereal_yield, name = 'Cereal Yield', mode = 'lines', 
                    line = list(color = "#ff7f0e"))
-    # Add the second trace for Average Temperature on the secondary y-axis
+    # Add the second trace for GDP per capita on the secondary y-axis on the right
     p <- add_trace(p, y = ~Gdp_per_cap, name = 'GDP Per Capita', mode = 'lines', 
                    line = list(color = "#00BFC4"), yaxis = 'y2')
     # Set the layout for the secondary y-axis
     p <- layout(p,
                 title = "Cereal Yield and GDP per Capita Over Time",
+                plot_bgcolor='#e5ecf6',
                 yaxis2 = list(
                   overlaying = "y",
                   side = "right",
