@@ -5,7 +5,7 @@ account: wena04
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11369149
-bundleId: 8338011
+bundleId: 8341757
 url: https://wena04.shinyapps.io/Info_201_Final_Project_BE-3/
 version: 1
 asMultiple: FALSE
