@@ -3,7 +3,7 @@
 
 Authors: Anthony Wen, Ici Su, Janet Huang, Eric Zhong
 
-**Link: [Link to Shiny App]([https://wena04.shinyapps.io/Info201FinalProject/](https://wena04.shinyapps.io/Info_201_Final_Project_BE-3/)https://wena04.shinyapps.io/Info_201_Final_Project_BE-3/)**
+**Link: [Link to Shiny App](https://wena04.shinyapps.io/Info_201_Final_Project_BE-3/)**
 
 # Introduction
 
