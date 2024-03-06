@@ -1,6 +1,6 @@
 #### Exploring the interrelationship between climate change and economic development
  
-Our project delves into the complex relationships between climate change and economic development, uncovering fascinating insights with our interactive data visualizations. We used our cleaned datasets to create graphs such as a heat maps to show temperature change and co2 emission laid over a world map, linear graph with multiple countries and economic and climate characteristics by year, and graphs showing the correlation between each variable. By analyzing the dynamics of various variables across different countries, we gain a deeper understanding of the complex interactions between global environmental factors and economic indicators, covering the time span from 1990 to 2010.
+Our project delves into the complex relationships between climate change and economic development, uncovering fascinating insights with our interactive data visualizations. We used our cleaned datasets to create graphs such as a heat maps to show temperature change and CO2 emission laid over a world map, linear graph with multiple countries and economic and climate characteristics by year, and graphs showing the correlation between each variable. By analyzing the dynamics of various variables across different countries, we gain a deeper understanding of the complex interactions between global environmental factors and economic indicators, covering the time span from 1990 to 2010.
 
 #### Key Takeaways:
 
