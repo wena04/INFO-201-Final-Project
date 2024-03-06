@@ -3,13 +3,6 @@
 
 Authors: Anthony Wen, Ici Su, Janet Huang, Eric Zhong
 
-For the Final Project -- Data Wrangling, add the following to this code repository:
-
-* An R script file containing the code you used to create your unified dataset 
-* Your unified and cleaned CSV dataset file
-* Data Nutrition Label (pdf) 
-
-
 **Link: [Link to Shiny App]([https://wena04.shinyapps.io/Info201FinalProject/](https://wena04.shinyapps.io/Info_201_Final_Project_BE-3/)https://wena04.shinyapps.io/Info_201_Final_Project_BE-3/)**
 
 # Introduction
