@@ -29,7 +29,10 @@ server <- function(input, output, session) {
     #changing the color of the legend/scale on the right side along with its limits "scale_fill_continuous(low = "#F3E0A5", high = "#ED5A26", limits = c(-10, 30))"
     #changing the title of the graph and the theme
     #render the plotly back to ui page
-    wm <- ggplot(data = world_with_temp,aes(x = long, y = lat, group = group, fill = Average_temp, text = paste0("Country: ", region, "<br>", "Average Temperature: ", round(Average_temp, 5)))) + scale_fill_viridis_c(option = "magma", direction = -1, limits = c(-10, 30)) + geom_polygon(aes(fill = Average_temp)) + labs(title = paste("Average Temperature By Country in", selected_year), fill = "Temperature (C)") + theme(panel.background = element_rect(fill = "#e5ecf6"))
+    wm <-
+      ggplot(data = world_with_temp, aes(x = long, y = lat, group = group, fill = Average_temp, text = paste0("Country: ", region, "<br>", "Average Temperature: ", round(Average_temp, 5)))) + 
+      scale_fill_viridis_c(option = "magma", direction = -1, limits = c(-10, 30)) + geom_polygon(aes(fill = Average_temp)) + labs(title = paste("Average Temperature By Country in", selected_year), fill = "Temperature (C)") + 
+      theme(panel.background = element_rect(fill = "#e5ecf6"))
     return(ggplotly(wm, tooltip = "text"))
   })
   
@@ -168,10 +171,10 @@ server <- function(input, output, session) {
     p <- plot_ly(data = filtered_data_3(), x = ~Year)
     # Add the first trace for CO2 emissions on the primary y-axis
     p <- add_trace(p, y = ~CO2_emissions, name = 'CO2 Emissions', mode = 'lines', 
-                   line = list(color = "#ff7f0e"))
+                   line = list(color = "#3E0751"))
     # Add the second trace for Average Temperature on the secondary y-axis
     p <- add_trace(p, y = ~Average_temp, name = 'Average Temperature', mode = 'lines', 
-                   line = list(color = "#00BFC4"), yaxis = 'y2')
+                   line = list(color = "#3F678B"), yaxis = 'y2')
     # Set the layout for the secondary y-axis
     p <- layout(p,
                 title = "CO2 Emissions per capita and Average Temperature Over Time",
@@ -179,10 +182,10 @@ server <- function(input, output, session) {
                 yaxis2 = list(
                   overlaying = "y",
                   side = "right",
-                  tickfont = list(color = '#00BFC4', size=11),color = '#00BFC4',title = "Average Temperature (C)"
+                  tickfont = list(color = '#3F678B', size=11),color = '#3F678B',title = "Average Temperature (C)"
                 ),
                 yaxis = list(
-                  title = "CO2 Emissions per capita (metric tons)", tickfont = list(color = '#ff7f0e', size=11), color='#ff7f0e'
+                  title = "CO2 Emissions per capita (metric tons)", tickfont = list(color = '#3E0751', size=11), color='#3E0751'
                 ),
                 hovermode = "x unified"
     )
@@ -195,10 +198,10 @@ server <- function(input, output, session) {
     p <- plot_ly(data = filtered_data_3(), x = ~Year)
     # Add the first trace for Average Temperature on the primary y-axis on the left
     p <- add_trace(p, y = ~Average_temp, name = 'Average Temperature (C)', mode = 'lines', 
-                   line = list(color = "#ff7f0e"))
+                   line = list(color = "#3E0751"))
     # Add the second trace for Cereal yield per capita on the secondary y-axis on the right
     p <- add_trace(p, y = ~Cereal_yield, name = 'Cereal Yield (kg per hectare)', mode = 'lines', 
-                   line = list(color = "#00BFC4"), yaxis = 'y2')
+                   line = list(color = "#3F678B"), yaxis = 'y2')
     # Set the layout for the secondary y-axis 
     p <- layout(p,
                 title = "Average Temperature and Cereal Yield",
@@ -206,10 +209,10 @@ server <- function(input, output, session) {
                 yaxis2 = list(
                   overlaying = "y",
                   side = "right",
-                  tickfont = list(color = '#00BFC4', size=11),color = '#00BFC4',title = "Average Temperature (C)"
+                  tickfont = list(color = '#3F678B', size=11),color = '#3F678B',title = "Cereal Yield (kg per hectare)"
                 ),
                 yaxis = list(
-                  title = "Cereal Yield (kg per hectare)", tickfont = list(color = '#ff7f0e', size=11), color='#ff7f0e'
+                  title = "Average Temperature (C)", tickfont = list(color = '#3E0751', size=11), color='#3E0751'
                 ), 
                 hovermode = "x unified"
     )
@@ -222,10 +225,10 @@ server <- function(input, output, session) {
     p <- plot_ly(data = filtered_data_3(), x = ~Year)
     # Add the first trace for Cereal Yield per Capita on the primary y-axis on the left
     p <- add_trace(p, y = ~Cereal_yield, name = 'Cereal Yield', mode = 'lines', 
-                   line = list(color = "#ff7f0e"))
+                   line = list(color = "#3E0751"))
     # Add the second trace for GDP per capita on the secondary y-axis on the right
     p <- add_trace(p, y = ~Gdp_per_cap, name = 'GDP Per Capita', mode = 'lines', 
-                   line = list(color = "#00BFC4"), yaxis = 'y2')
+                   line = list(color = "#3F678B"), yaxis = 'y2')
     # Set the layout for the secondary y-axis
     p <- layout(p,
                 title = "Cereal Yield and GDP per Capita Over Time",
@@ -233,10 +236,10 @@ server <- function(input, output, session) {
                 yaxis2 = list(
                   overlaying = "y",
                   side = "right",
-                  tickfont = list(color = '#00BFC4', size=11),color = '#00BFC4',title = "Cereal Yield"
+                  tickfont = list(color = '#3F678B', size=11),color = '#3F678B',title = "GDP per Capita in U.S. Dollars (Billions)"
                 ),
                 yaxis = list(
-                  title = "GDP per Capita", tickfont = list(color = '#ff7f0e', size=11), color='#ff7f0e'
+                  title = "Cereal Yield (kg per hectare)", tickfont = list(color = '#3E0751', size=11), color='#3E0751'
                 ),
                 hovermode = "x unified"
     )
